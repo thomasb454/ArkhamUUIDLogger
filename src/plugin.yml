@@ -1,0 +1,4 @@
+name: ArkhamUUIDLogger
+main: org.arkhamnetwork.uuid.ArkhamUUIDLogger
+version: 0.2.6
+author: harry5573
