@@ -39,7 +39,21 @@ public class StorageManager {
                 return false;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(StorageManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
+    }
+
+    public static boolean playerNameHasChangedFromUUID(String UUID, String playerName) {
+        try {
+            String loggedAccountUUID = plugin.DB.getStoredUUIDFromAccount(playerName);
+            if (loggedAccountUUID == null) {
+                return false;
+            }
+
+            if (loggedAccountUUID.equalsIgnoreCase(UUID)) {
+                return false;
+            }
+        } catch (SQLException ex) {
         }
         return true;
     }

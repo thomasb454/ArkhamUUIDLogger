@@ -56,7 +56,7 @@ public class ArkhamUUIDLogger extends Plugin {
             return;
         }
         
-        this.getProxy().getPluginManager().registerListener(plugin, new LoginListener());
+        getProxy().getPluginManager().registerListener(plugin, new LoginListener());
         
         log("=[ Plugin version " + getDescription().getVersion() + " started ]=");
     }

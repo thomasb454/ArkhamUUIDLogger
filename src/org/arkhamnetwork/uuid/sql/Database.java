@@ -33,12 +33,25 @@ public class Database {
             return false;
         }
 
-        Statement statement = c.createStatement();
-        statement.executeQuery("SELECT * FROM playerstorage WHERE uuid='" + uuid + "'");
-        ResultSet rs = statement.getResultSet();
+        Statement statement = null;
+        ResultSet rs = null;
 
-        while (rs.next()) {
-            return true;
+        try {
+            statement = c.createStatement();
+            statement.executeQuery("SELECT * FROM playerstorage WHERE uuid='" + uuid + "'");
+            rs = statement.getResultSet();
+
+            while (rs.next()) {
+                return true;
+            }
+        } finally {
+            if (statement != null && !statement.isClosed()) {
+                statement.close();
+            }
+
+            if (rs != null && !rs.isClosed()) {
+                rs.close();
+            }
         }
         return false;
     }
@@ -52,8 +65,16 @@ public class Database {
             return;
         }
 
-        Statement statement = c.createStatement();
-        statement.execute("INSERT INTO playerstorage (`uuid`, `playername`) VALUES ('" + UUID + "', '" + playerName + "');");
+        Statement statement = null;
+
+        try {
+            statement = c.createStatement();
+            statement.execute("INSERT INTO playerstorage (`uuid`, `playername`) VALUES ('" + UUID + "', '" + playerName + "');");
+        } finally {
+            if (statement != null && !statement.isClosed()) {
+                statement.close();
+            }
+        }
     }
 
     public String getStoredAccountNameFromUUID(String UUID) throws SQLException {
@@ -65,12 +86,58 @@ public class Database {
             return null;
         }
 
-        Statement statement = c.createStatement();
-        statement.executeQuery("SELECT playername FROM playerstorage WHERE uuid='" + UUID + "'");
-        ResultSet rs = statement.getResultSet();
+        Statement statement = null;
+        ResultSet rs = null;
 
-        while (rs.next()) {
-            return rs.getString("playername");
+        try {
+            statement = c.createStatement();
+            statement.executeQuery("SELECT playername FROM playerstorage WHERE uuid='" + UUID + "'");
+            rs = statement.getResultSet();
+
+            while (rs.next()) {
+                return rs.getString("playername");
+            }
+        } finally {
+            if (statement != null && !statement.isClosed()) {
+                statement.close();
+            }
+
+            if (rs != null && !rs.isClosed()) {
+                rs.close();
+            }
+        }
+
+        return null;
+    }
+
+    public String getStoredUUIDFromAccount(String playerName) throws SQLException {
+        if (!mysql.checkConnection()) {
+            c = mysql.open();
+        }
+
+        if (c == null) {
+            return null;
+        }
+
+        Statement statement = null;
+        ResultSet rs = null;
+
+        try {
+            statement = c.createStatement();
+            statement.executeQuery("SELECT uuid FROM playerstorage WHERE playername='" + playerName + "'");
+            rs = statement.getResultSet();
+
+            while (rs.next()) {
+                return rs.getString("uuid");
+            }
+        } finally {
+            if (statement != null && !statement.isClosed()) {
+                statement.close();
+            }
+
+            if (rs != null && !rs.isClosed()) {
+                rs.close();
+            }
         }
 
         return null;
